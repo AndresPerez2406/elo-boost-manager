@@ -1,89 +1,101 @@
+import json
 import os
 
 # --- ZONA DE FUNCIONES (Tus Herramientas) ---
 
+def guardar_datos(lista_pedidos):
+    """Guarda la lista de pedidos en un archivo .json"""
+    with open("base_datos_pedidos.json", "w") as archivo:
+        json.dump(lista_pedidos, archivo, indent=4)
+    print("\n✅ Datos guardados en 'base_datos_pedidos.json'")
+
+def cargar_datos():
+    """Lee el archivo JSON. Si no existe, devuelve una lista vacía."""
+    if os.path.exists("base_datos_pedidos.json"):
+        with open("base_datos_pedidos.json", "r") as archivo:
+            return json.load(archivo)
+    return []
+
+def calcular_pago_booster(pago_base, win_rate, nivel_honor):
+    pago_final = pago_base
+    if win_rate < 50:
+        pago_final = pago_final * 0.75
+        print("⚠️ Penalización aplicada: WR < 50% (-25%)")
+    if nivel_honor <= 1:
+        pago_final = pago_final * 0.50
+        print("⚠️ Penalización aplicada: Honor 0 o 1 (-50%)")
+    return pago_final
+
 def pedir_si_no(mensaje):
-    """Pregunta s/n y solo devuelve True (si) o False (no)"""
     while True:
-        respuesta = input(mensaje).lower() # Convertimos a minuscula (S -> s)
-        if respuesta == "s":
-            return True
-        elif respuesta == "n":
-            return False
-        else:
-            print("❌ Opción no válida. Escribe 's' o 'n'.")
+        respuesta = input(mensaje).lower()
+        if respuesta == "s": return True
+        if respuesta == "n": return False
+        print("❌ Opción no válida. Escribe 's' o 'n'.")
 
 def pedir_numero(mensaje):
-    """Pide un numero y no te deja avanzar hasta que sea valido"""
     while True:
         try:
-            # Intentamos convertir lo que escriba a numero
-            dato = int(input(mensaje))
-            return dato # Si funciona, devolvemos el numero y rompemos el loop
+            return int(input(mensaje))
         except ValueError:
-            # Si falla (escribio letras), caemos aqui
-            print("❌ ¡Error! Por favor ingresa solo números (Ej: 20).")
+            print("❌ ¡Error! Ingresa solo números.")
 
 def limpiar_pantalla():
-    """Limpia la consola para que se vea pro"""
     os.system('cls' if os.name == 'nt' else 'clear')
 
-def calcular_ganancia(cobro, pago_booster):
-    """Recibe dos numeros y devuelve la resta"""
-    return cobro - pago_booster
-
 def mostrar_reporte(lista_pedidos):
-    """Imprime el reporte final bonito"""
     print("\n" + "="*40)
-    print("📊 REPORTE FINAL DE ELO-BOOST 📊")
+    print("📊 REPORTE HISTÓRICO DE ELO-BOOST 📊")
     print("="*40)
-    
     total_caja = 0
-    
     for p in lista_pedidos:
-        print(f"[{p['estado']}] {p['cuenta']} | Booster: {p['booster']} | Profit: ${p['ganancia']}")
+        print(f"[{p['estado']}] {p['cuenta']} | Profit: ${p['ganancia']}")
         if p['estado'] == "Terminado":
-            
             total_caja += p['ganancia']
-            
     print("-" * 40)
     print(f"💰 GANANCIA TOTAL EN CAJA: ${total_caja}")
     print("=" * 40)
 
-# --- ZONA PRINCIPAL (Donde ocurre la magia) ---
+# --- ZONA PRINCIPAL ---
 
-pedidos = []
+# 1. Cargamos datos al iniciar
+pedidos = cargar_datos()
 
 while True:
     limpiar_pantalla()
     print("--- NUEVO PEDIDO ---")
     
-    # 1. Pedir Datos
+    # 2. Pedir Datos
     cuenta = input("Nombre de Cuenta: ")
     booster = input("Nombre del Booster: ")
     precio_cliente = pedir_numero("Cobro al Cliente ($): ")
-    pago_booster = pedir_numero("Pago al Booster ($): ")
+    pago_base = pedir_numero("Pago base acordado al Booster ($): ")
+    wr_final = pedir_numero("Win Rate final de la cuenta (%): ")
+    honor_final = pedir_numero("Nivel de Honor final (0-5): ")
     
-    # 2. Usar nuestra funcion magica
-    profit = calcular_ganancia(precio_cliente, pago_booster)
-    
-    # 3. Guardar
-    estado = pedir_si_no("¿Terminado? (s/n): ")
-    estado_final = "Terminado" if estado == "s" else "Pendiente"
-    
+    # 3. Procesar
+    pago_real = calcular_pago_booster(pago_base, wr_final, honor_final)
+    profit = precio_cliente - pago_real 
+    es_terminado = pedir_si_no("¿El pedido ya está terminado? (s/n): ")
+    estado_texto = "Terminado" if es_terminado else "Pendiente"
+
+    # 4. Guardar en memoria
     nuevo_ticket = {
         "cuenta": cuenta,
         "booster": booster,
+        "pago_booster": pago_real,
         "ganancia": profit,
-        "estado": estado_final
+        "estado": estado_texto
     }
-    
     pedidos.append(nuevo_ticket)
-    print(f"✅ Pedido guardado. Ganancia calculada: ${profit}")
-    
-    # 4. Continuar?
-    if pedir_si_no("\n¿Agregar otro? (Enter=Si, 'n'=No): ") == False:
+
+    print(f"\n✅ Ticket registrado. Profit: ${profit}")
+        
+    # 5. Salir o Seguir
+    if not pedir_si_no("\n¿Agregar otro pedido? (s/n): "):
         break
 
-# Al final, llamamos a la funcion de reporte
+# --- FINALIZACIÓN ---
+limpiar_pantalla()
 mostrar_reporte(pedidos)
+guardar_datos(pedidos) # Aquí se graban todos los nuevos y viejos
