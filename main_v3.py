@@ -3,6 +3,30 @@ import os
 
 # --- ZONA DE FUNCIONES ---
 
+def buscar_pedido(lista_pedidos):
+    nombre = input("\n🔍 Ingresa el nombre de la cuenta a buscar: ")
+    encontrado = False
+    for p in lista_pedidos:
+        # Usamos .lower() para que encuentre "Cuenta" aunque escribas "cuenta"
+        if p['cuenta'].lower() == nombre.lower():
+            print(f"\n✅ ENCONTRADO: {p['cuenta']} | Booster: {p['booster']} | Profit: ${p['ganancia']} | Estado: {p['estado']}")
+            encontrado = True
+    if not encontrado:
+        print("❌ No se encontró ninguna cuenta con ese nombre.")
+    input("\nPresiona Enter para volver al menú...")
+
+def actualizar_estado(lista_pedidos):
+    nombre = input("\n📝 Nombre de la cuenta para cambiar a 'Terminado': ")
+    for p in lista_pedidos:
+        if p['cuenta'].lower() == nombre.lower():
+            if p['estado'] == "Terminado":
+                print("⚠️ Este pedido ya figura como Terminado.")
+            else:
+                p['estado'] = "Terminado"
+                print(f"✅ ¡Estado actualizado! {p['cuenta']} ahora está Terminado.")
+            return # Salimos de la función al encontrarlo
+    print("❌ No se encontró la cuenta.")
+
 def guardar_datos(lista_pedidos):
     with open("base_datos_pedidos.json", "w") as archivo:
         json.dump(lista_pedidos, archivo, indent=4)
@@ -61,41 +85,34 @@ def limpiar_pantalla():
 pedidos = cargar_datos()
 
 while True:
-    limpiar_pantalla()
-    print("--- PEREZBOOST MANAGER v3.0 ---")
+    
     print("1. Registrar nuevo pedido")
     print("2. Ver historial y total en caja")
-    print("3. Borrar historial (Reset)")
-    print("4. Salir")
+    print("3. Buscar pedido específico") # Nueva opción
+    print("4. Marcar pedido como Terminado") # Nueva opción
+    print("5. Borrar historial (Reset)")
+    print("6. Salir")
     
+    # --- DENTRO DEL WHILE TRUE ---
     opcion = input("\nSelecciona una opción: ")
 
     if opcion == "1":
-        limpiar_pantalla()
-        print("--- NUEVO PEDIDO ---")
-        cuenta = input("Nombre de Cuenta: ")
-        booster = input("Nombre del Booster: ")
-        precio_cliente = pedir_numero("Cobro al Cliente ($): ")
-        pago_base = pedir_numero("Pago base al Booster ($): ")
-        wr = pedir_numero("Win Rate final (%): ")
-        honor = pedir_numero("Nivel de Honor (0-5): ")
-        
-        pago_real = calcular_pago_booster(pago_base, wr, honor)
-        profit = precio_cliente - pago_real
-        estado = "Terminado" if pedir_si_no("¿Ya terminó? (s/n): ") else "Pendiente"
-
-        pedidos.append({
-            "cuenta": cuenta, "booster": booster, "pago_booster": pago_real,
-            "ganancia": profit, "estado": estado
-        })
-        guardar_datos(pedidos)
-        print(f"\n✅ Guardado. Profit: ${profit}")
-        input("Presiona Enter...")
+        # ... (Tu código actual para registrar pedido)
+        # Asegúrate de que al final del registro diga: pedidos.append(nuevo_ticket)
+        # y guardar_datos(pedidos)
+        pass 
 
     elif opcion == "2":
         mostrar_reporte(pedidos)
 
     elif opcion == "3":
+        buscar_pedido(pedidos)  # <--- NUEVA
+
+    elif opcion == "4":
+        actualizar_estado(pedidos) # <--- NUEVA
+        guardar_datos(pedidos)     # Guardamos el cambio en el archivo .json
+
+    elif opcion == "5":
         if pedir_si_no("¿SEGURO que quieres borrar TODO el historial? (s/n): "):
             pedidos = []
             if os.path.exists("base_datos_pedidos.json"):
@@ -103,9 +120,6 @@ while True:
             print("\n🔥 Historial borrado.")
             input("Presiona Enter...")
 
-    elif opcion == "4":
+    elif opcion == "6":
         print("\n¡Nos vemos, Manager! Suerte con los rangos.")
         break
-    else:
-        print("❌ Opción inválida.")
-        input("Presiona Enter...")
