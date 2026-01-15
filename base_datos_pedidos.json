@@ -1,1 +1,36 @@
-[]
+[
+    {
+        "user_pass": "MordantWreduru : vqfek7i$p&2d",
+        "booster": "Kio",
+        "tipo_cuenta": "E",
+        "elo_final": "E4",
+        "wr": 70.0,
+        "pago_cliente": 12,
+        "ganancia_empresa": 5.0,
+        "pago_booster": 8.0,
+        "estado": "Terminado",
+        "bono_aplicado": "S\u00cd"
+    },
+    {
+        "user_pass": "xfbmy88517689----excl5716",
+        "booster": "Raton",
+        "tipo_cuenta": "E",
+        "elo_final": "Pendiente",
+        "wr": 0,
+        "pago_cliente": 0.0,
+        "ganancia_empresa": 0.0,
+        "pago_booster": 0.0,
+        "estado": "Pendiente"
+    },
+    {
+        "user_pass": "SheerYigeka : trinzik13",
+        "booster": "Xsex",
+        "tipo_cuenta": "D",
+        "elo_final": "Pendiente",
+        "wr": 0,
+        "pago_cliente": 0.0,
+        "ganancia_empresa": 0.0,
+        "pago_booster": 0.0,
+        "estado": "Pendiente"
+    }
+]
