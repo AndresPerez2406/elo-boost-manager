@@ -9,7 +9,7 @@
         "ganancia_empresa": 5.0,
         "pago_booster": 8.0,
         "estado": "Terminado",
-        "bono_aplicado": "S\u00cd"
+        "bono_aplicado": "SÍ"
     },
     {
         "user_pass": "xfbmy88517689----excl5716",
@@ -32,5 +32,17 @@
         "ganancia_empresa": 0.0,
         "pago_booster": 0.0,
         "estado": "Pendiente"
+    },
+    {
+        "user_pass": "CherubicNapowi : trinzik13",
+        "booster": "Smoood",
+        "tipo_cuenta": "D",
+        "elo_final": "D4",
+        "wr": 55.0,
+        "pago_cliente": 30,
+        "ganancia_empresa": 10.0,
+        "pago_booster": 20.0,
+        "estado": "Terminado",
+        "bono_aplicado": "NO"
     }
 ]

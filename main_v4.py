@@ -15,13 +15,14 @@ PRECIOS_ELO = {
 
 def cargar_datos():
     if os.path.exists("base_datos_pedidos.json"):
-        with open("base_datos_pedidos.json", "r") as archivo:
+        # AÑADIR: encoding="utf-8" AQUÍ ABAJO
+        with open("base_datos_pedidos.json", "r", encoding="utf-8") as archivo:
             return json.load(archivo)
     return []
 
-def guardar_datos(lista_pedidos):    
-    with open("base_datos_pedidos.json", "w") as archivo:
-        json.dump(lista_pedidos, archivo, indent=4)
+def guardar_datos(lista_pedidos):
+    with open("base_datos_pedidos.json", "w", encoding="utf-8") as archivo:
+        json.dump(lista_pedidos, archivo, indent=4, ensure_ascii=False)
     print("\n✅ Base de datos actualizada.")
 
 def exportar_a_csv(lista_pedidos):    
@@ -29,20 +30,25 @@ def exportar_a_csv(lista_pedidos):
         print("⚠️ No hay datos para exportar.")
         return
 
-    nombre_archivo = "reporte_boost_ventas.csv"
+    nombre_archivo = "reporte_perezboost_final.csv"
+    
+    # Estas son las columnas EXACTAS que verás en Excel
     columnas = [
-        "user_pass", "booster", "elo_final", "wr",
-        "pago_cliente", "ganancia_empresa", "pago_booster", "bono_aplicado", "estado"
+        "booster", "tipo_cuenta", "user_pass", "estado", 
+        "elo_final", "wr", "pago_cliente", "ganancia_empresa", 
+        "pago_booster", "bono_aplicado"
     ]
 
     try:
-        with open(nombre_archivo, mode='w', newline='', encoding='utf-8') as archivo:
-            escritor = csv.DictWriter(archivo, fieldnames=columnas)
-            escritor.writeheader()  # Escribe los títulos de las columnas
-            escritor.writerows(lista_pedidos) # Escribe todos los pedidos de golpe
+        with open(nombre_archivo, mode='w', newline='', encoding='utf-8-sig') as archivo:
+            # El secreto está en 'extrasaction="ignore"'
+            # Esto le dice a Python: "Si el pedido tiene más datos de los que te pedí, ignóralos y no des error"
+            escritor = csv.DictWriter(archivo, fieldnames=columnas, extrasaction='ignore')
+            
+            escritor.writeheader()
+            escritor.writerows(lista_pedidos)
         
-        print(f"\n✅ ¡Éxito! Reporte creado como: {nombre_archivo}")
-        print("💡 Ya puedes abrirlo con Excel o Google Sheets.")
+        print(f"\n✅ ¡Excel generado! Archivo: {nombre_archivo}")
     except Exception as e:
         print(f"❌ Error al exportar: {e}")
     
@@ -74,41 +80,63 @@ def actualizar_estado(lista_pedidos):
         print("⚠️ No hay pedidos registrados.")
         return
 
-    # 1. Mostrar lista de pendientes
-    print("\n--- 📋 PEDIDOS PENDIENTES ACTUALMENTE ---")
-    pendientes = [p for p in lista_pedidos if p['estado'] == "Pendiente"]
-    if not pendientes:
+    print("\n--- 📋 SELECCIONA EL PEDIDO A TERMINAR ---")
+    
+    # Creamos una lista de los índices originales para no perder la referencia
+    indices_pendientes = []
+    for i, p in enumerate(lista_pedidos):
+        if p.get('estado') == "Pendiente":
+            indices_pendientes.append(i)
+            tipo_v = "Diamante" if p.get('tipo_cuenta') == "D" else "Esm/Plat"
+            print(f"{len(indices_pendientes)}. Booster: {p['booster']} | Cuenta: {p['user_pass']} ({tipo_v})")
+
+    if not indices_pendientes:
         print("✅ No hay nada pendiente por cerrar.")
         return
+
+    try:
+        seleccion = int(input("\nEscribe el NÚMERO del pedido a cerrar (0 para cancelar): "))
+        if seleccion == 0: return
+        
+        # OBTENEMOS EL PEDIDO REAL DESDE LA LISTA ORIGINAL USANDO EL ÍNDICE
+        indice_real = indices_pendientes[seleccion - 1]
+        p = lista_pedidos[indice_real] # <--- ESTO ES EL PEDIDO ORIGINAL
+    except (ValueError, IndexError):
+        print("❌ Selección no válida.")
+        return
+
+    print(f"\n✨ Cerrando pedido de {p['booster']}...")
+    elo_f = input("¿División final? (ej: D2, E1, P4): ").strip().upper()
     
-    for i, p in enumerate(pendientes, 1):
-        # Mostramos el tipo registrado (D o E) para que sepas qué esperar
-        tipo_vista = "Diamante" if p.get('tipo_cuenta') == "D" else "Esm/Plat"
-        print(f"{i}. Booster: {p['booster']} | Tipo: {tipo_vista} | Cuenta: {p['user_pass']}")
+    if elo_f not in PRECIOS_ELO:
+        print("❌ División no válida.")
+        return
 
-    # 2. Selección del booster
-    seleccion = input("\n📝 Escribe el nombre del BOOSTER del pedido a cerrar (o 'cancelar'): ").strip().lower()
-    if seleccion == "cancelar": return
+    # CALCULOS
+    pago_total = PRECIOS_ELO[elo_f]
+    mi_ganancia = 10.0 if p.get('tipo_cuenta') == "D" else 5.0
+    pago_booster = pago_total - mi_ganancia
+    
+    wr_f = float(input("¿Win Rate final? (%): "))
+    if wr_f >= 60:
+        pago_booster += 1.0
+        p['bono_aplicado'] = "SÍ"
+        print("🔥 +$1 Bono WR aplicado.")
+    else:
+        p['bono_aplicado'] = "NO"
 
-    encontrado = False
-    for p in lista_pedidos:
-        if p['booster'].lower() == seleccion and p['estado'] == "Pendiente":
-            print(f"\n✨ Cerrando pedido de {p['booster']}...")
-            
-            # 3. Pedir Elo Final usando códigos cortos (D2, E1, P4)
-            print("Divisiones: D4-D1 | E4-E1 | P4-P1")
-            elo_f = input("¿En qué división terminó? (ej: D2): ").strip().upper()
-            
-            if elo_f not in PRECIOS_ELO:
-                print("❌ Código de división no válido. Revisa la tabla de precios.")
-                return
+    # --- CAMBIOS DIRECTOS AL OBJETO ---
+    p['elo_final'] = elo_f
+    p['wr'] = wr_f
+    p['pago_cliente'] = pago_total
+    p['ganancia_empresa'] = mi_ganancia
+    p['pago_booster'] = pago_booster
+    p['estado'] = "Terminado" # <--- AHORA SÍ CAMBIA EN LA LISTA ORIGINAL
 
-            # 4. Cálculo dinámico de ganancia
-            pago_total = PRECIOS_ELO[elo_f]
-            
-            # Si el tipo registrado fue 'D', ganas 10. Si fue 'E', ganas 5.
-            mi_ganancia = 10.0 if p.get('tipo_cuenta') == "D" else 5.0
-
+    # GUARDAR Y CONFIRMAR
+    guardar_datos(lista_pedidos)
+    print(f"\n✅ ¡ÉXITO! El pedido ahora está TERMINADO en la base de datos.")
+    input("Presiona Enter para continuar...")
 def buscar_pedido(lista_pedidos):
     nombre = input("\n🔍 Nombre del Booster para ver sus cuentas PENDIENTES: ").strip().lower()
     encontrado = False
