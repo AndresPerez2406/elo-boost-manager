@@ -1,48 +1,141 @@
-[
-    {
-        "user_pass": "MordantWreduru : vqfek7i$p&2d",
-        "booster": "Kio",
-        "tipo_cuenta": "E",
-        "elo_final": "E4",
-        "wr": 70.0,
-        "pago_cliente": 12,
-        "ganancia_empresa": 5.0,
-        "pago_booster": 8.0,
-        "estado": "Terminado",
-        "bono_aplicado": "SÍ"
-    },
-    {
-        "user_pass": "xfbmy88517689----excl5716",
-        "booster": "Raton",
-        "tipo_cuenta": "E",
-        "elo_final": "Pendiente",
-        "wr": 0,
-        "pago_cliente": 0.0,
-        "ganancia_empresa": 0.0,
-        "pago_booster": 0.0,
-        "estado": "Pendiente"
-    },
-    {
-        "user_pass": "SheerYigeka : trinzik13",
-        "booster": "Xsex",
-        "tipo_cuenta": "D",
-        "elo_final": "Pendiente",
-        "wr": 0,
-        "pago_cliente": 0.0,
-        "ganancia_empresa": 0.0,
-        "pago_booster": 0.0,
-        "estado": "Pendiente"
-    },
-    {
-        "user_pass": "CherubicNapowi : trinzik13",
-        "booster": "Smoood",
-        "tipo_cuenta": "D",
-        "elo_final": "D4",
-        "wr": 55.0,
-        "pago_cliente": 30,
-        "ganancia_empresa": 10.0,
-        "pago_booster": 20.0,
-        "estado": "Terminado",
-        "bono_aplicado": "NO"
-    }
-]
+{
+    "pedidos": [
+        {
+            "user_pass": "xfbmy88517689----excl5716",
+            "booster": "Raton",
+            "tipo_cuenta": "E",
+            "fecha_inicio": "11/01/2026",
+            "fecha_limite": "22/01/2026",
+            "estado": "Terminado",
+            "pago_cliente": 12,
+            "ganancia_empresa": 5.0,
+            "pago_booster": 8.0,
+            "wr": 65.0,
+            "bono_aplicado": "SÍ",
+            "elo_final": "E4"
+        },
+        {
+            "user_pass": "MordantWreduru : vqfek7i$p&2d",
+            "booster": "Kio",
+            "tipo_cuenta": "E",
+            "fecha_inicio": "11/01/2026",
+            "fecha_limite": "22/01/2026",
+            "estado": "Terminado",
+            "pago_cliente": 12,
+            "ganancia_empresa": 5.0,
+            "pago_booster": 8.0,
+            "wr": 70.0,
+            "bono_aplicado": "SÍ",
+            "elo_final": "E4"
+        },
+        {
+            "user_pass": "SheerYigeka : trinzik13",
+            "booster": "Xsex",
+            "tipo_cuenta": "D",
+            "fecha_inicio": "12/01/2026",
+            "fecha_limite": "23/01/2026",
+            "estado": "Pendiente",
+            "pago_cliente": 0.0,
+            "ganancia_empresa": 0.0,
+            "pago_booster": 0.0,
+            "wr": 0,
+            "bono_aplicado": "NO",
+            "elo_final": "Pendiente"
+        },
+        {
+            "user_pass": "GlowingGodusho : trinzik13",
+            "booster": "Xsex",
+            "tipo_cuenta": "D",
+            "fecha_inicio": "12/01/2026",
+            "fecha_limite": "23/01/2026",
+            "estado": "Pendiente",
+            "pago_cliente": 0.0,
+            "ganancia_empresa": 0.0,
+            "pago_booster": 0.0,
+            "wr": 0,
+            "bono_aplicado": "NO",
+            "elo_final": "Pendiente"
+        },
+        {
+            "user_pass": "CherubicNapowi : trinzik13",
+            "booster": "Smood",
+            "tipo_cuenta": "D",
+            "fecha_inicio": "12/01/2026",
+            "fecha_limite": "23/01/2026",
+            "estado": "Pendiente",
+            "pago_cliente": 0.0,
+            "ganancia_empresa": 0.0,
+            "pago_booster": 0.0,
+            "wr": 0,
+            "bono_aplicado": "NO",
+            "elo_final": "Pendiente"
+        },
+        {
+            "user_pass": "RoyalJeragi : trinzik13",
+            "booster": "Martin",
+            "tipo_cuenta": "D",
+            "fecha_inicio": "14/01/2026",
+            "fecha_limite": "26/01/2026",
+            "estado": "Pendiente",
+            "pago_cliente": 0.0,
+            "ganancia_empresa": 0.0,
+            "pago_booster": 0.0,
+            "wr": 0,
+            "bono_aplicado": "NO",
+            "elo_final": "Pendiente"
+        },
+        {
+            "user_pass": "Gateyire :  &#4!g9v8n*5c",
+            "booster": "Raton",
+            "tipo_cuenta": "E",
+            "fecha_inicio": "15/01/2026",
+            "fecha_limite": "26/01/2026",
+            "estado": "Pendiente",
+            "pago_cliente": 0.0,
+            "ganancia_empresa": 0.0,
+            "pago_booster": 0.0,
+            "wr": 0,
+            "bono_aplicado": "NO",
+            "elo_final": "Pendiente"
+        },
+        {
+            "user_pass": "SmasherCablakra : trinzik13",
+            "booster": "Kio",
+            "tipo_cuenta": "D",
+            "fecha_inicio": "14/01/2026",
+            "fecha_limite": "26/01/2026",
+            "estado": "Pendiente",
+            "pago_cliente": 0.0,
+            "ganancia_empresa": 0.0,
+            "pago_booster": 0.0,
+            "wr": 0,
+            "bono_aplicado": "NO",
+            "elo_final": "Pendiente"
+        }
+    ],
+    "disponibles": [
+        {
+            "user_pass": "BrightPelade : rt6za*iufb3&",
+            "elo": "E"
+        },
+        {
+            "user_pass": "SharpHeshoshe : wfr#c0&zvly$",
+            "elo": "E"
+        },
+        {
+            "user_pass": "Yekaster : trinzik13",
+            "elo": "E"
+        },
+        {
+            "user_pass": "RedSeshafa : trinzik13",
+            "elo": "D"
+        }
+    ],
+    "boosters": [
+        "Kio",
+        "Raton",
+        "Xsex",
+        "Smood",
+        "Martin"
+    ]
+}

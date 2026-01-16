@@ -1,5 +1,9 @@
-﻿booster,tipo_cuenta,user_pass,estado,elo_final,wr,pago_cliente,ganancia_empresa,pago_booster,bono_aplicado
-Kio,E,MordantWreduru : vqfek7i$p&2d,Terminado,E4,70.0,12,5.0,8.0,SÍ
-Raton,E,xfbmy88517689----excl5716,Pendiente,Pendiente,0,0.0,0.0,0.0,
-Xsex,D,SheerYigeka : trinzik13,Pendiente,Pendiente,0,0.0,0.0,0.0,
-Smoood,D,CherubicNapowi : trinzik13,Terminado,D4,55.0,30,10.0,20.0,NO
+﻿booster,tipo_cuenta,user_pass,estado,elo_final,wr,pago_cliente,ganancia_empresa,pago_booster,bono_aplicado,fecha_inicio,fecha_limite
+Raton,Esmeralda/Platino,xfbmy88517689----excl5716,Terminado,E4,65.0,12,5.0,8.0,SÍ,11/01/2026,22/01/2026
+Kio,Esmeralda/Platino,MordantWreduru : vqfek7i$p&2d,Terminado,E4,70.0,12,5.0,8.0,SÍ,11/01/2026,22/01/2026
+Xsex,Diamante,SheerYigeka : trinzik13,Pendiente,Pendiente,0,0.0,0.0,0.0,NO,12/01/2026,23/01/2026
+Xsex,Diamante,GlowingGodusho : trinzik13,Pendiente,Pendiente,0,0.0,0.0,0.0,NO,12/01/2026,23/01/2026
+Smood,Diamante,CherubicNapowi : trinzik13,Pendiente,Pendiente,0,0.0,0.0,0.0,NO,12/01/2026,23/01/2026
+Martin,Diamante,RoyalJeragi : trinzik13,Pendiente,Pendiente,0,0.0,0.0,0.0,NO,14/01/2026,26/01/2026
+Raton,Esmeralda/Platino,Gateyire :  &#4!g9v8n*5c,Pendiente,Pendiente,0,0.0,0.0,0.0,NO,15/01/2026,26/01/2026
+Kio,Diamante,SmasherCablakra : trinzik13,Pendiente,Pendiente,0,0.0,0.0,0.0,NO,14/01/2026,26/01/2026
