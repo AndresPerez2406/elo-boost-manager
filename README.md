@@ -1,3 +1,4 @@
+
 # PerezBoost Manager V6 (SQL Edition) ⚔️
 
 **A professional, SQL-driven management system specifically designed to streamline digital service operations (Elo Boosting), automate complex order tracking, and ensure financial integrity.**
@@ -10,10 +11,10 @@
 
 ## 🖼️ Preview (V7 GUI Prototype Coming Soon)
 
-**`<div align="center">`**
-  **`<img src="preview_v7.png" alt="Prototipo GUI V7" width="800">`**
-  **`<p>`**`<em>`Imagen representativa del concepto de interfaz gráfica moderna (Dark Mode) planeada para la versión V7.**`</em>`**`</p>`
-**`</div>`**
+<div align="center">
+  <img src="image.png" alt="Prototipo GUI V7" width="800">
+  <p><em>Imagen representativa del concepto de interfaz gráfica moderna (Dark Mode) planeada para la versión V7.</em></p>
+</div>
 
 ---
 

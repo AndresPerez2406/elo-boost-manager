@@ -80,5 +80,21 @@ def calcular_tiempo_transcurrido(fecha_inicio_str):
         return f"⚠️ {dias}d {horas}h"
     except: return "N/A"
 
+def calcular_duracion_servicio(f_inicio_str, f_fin_str):
+    
+    try:
+        inicio = datetime.strptime(f_inicio_str, "%Y-%m-%d %H:%M")
+        fin = datetime.strptime(f_fin_str, "%Y-%m-%d %H:%M")
+        
+        diff = fin - inicio
+        dias = diff.days
+        horas = diff.seconds // 3600
+        
+        if dias == 0:
+            return f"{horas}h"
+        return f"{dias}d {horas}h"
+    except:
+        return "N/A"
+
 def calcular_duracion_boost(inicio_str, fin_str):
     return "N/A" # Simplificado

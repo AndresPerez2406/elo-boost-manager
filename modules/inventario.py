@@ -1,4 +1,5 @@
 from core.database import agregar_cuenta, obtener_inventario, eliminar_cuenta
+from core.database import obtener_inventario
 
 def menu_inventario():
     while True:
@@ -35,34 +36,36 @@ def menu_inventario():
             break
 
 def mostrar_stock():
-    """
-    Función Unificada: Muestra ID, Elo, Usuario y la NOTA (Descripción).
-    """
-    print("\n--- 📦 INVENTARIO COMPLETO ---")
     
-    # Llamamos a core/database.py (que ahora devuelve 4 columnas)
+    print("\n" + "--- 📦 INVENTARIO COMPLETO ---".center(85))
+    
+    # Llamamos a core/database.py
     stock = obtener_inventario()
     
     if not stock:
-        print("   (La bodega está vacía 🕸️)")
+        print("   (La bodega está vacía 🕸️)".center(85))
         return
 
-    # Header ajustado para mostrar la descripción
-    print(f"{'ID':<4} | {'TIPO':<17} | {'CUENTA':<20} | {'NOTAS / ESTADO'}")
+    # Header: Usamos '#' para el ID Visual
+    # Mantengo el ID Real en el empaquetado por si lo necesitas, pero no lo imprimimos
+    print(f"{'#':<4} | {'TIPO':<17} | {'CUENTA':<20} | {'NOTAS / ESTADO'}")
     print("-" * 85)
 
-    for item in stock:
-        # DESEMPAQUETADO SEGURO (4 VARIABLES)
-        # item[0]=id, item[1]=user, item[2]=elo, item[3]=descripcion
-        id_c = item[0]
-        up   = item[1]
-        elo  = item[2] if item[2] else "Unranked"
-        nota = item[3] if item[3] else "FRESH" # Si no hay nota, es Fresh
+    # USAMOS ENUMERATE para el ID Visual (1, 2, 3...)
+    for i, item in enumerate(stock, start=1):
+        # item[0]=id_real, item[1]=user, item[2]=elo, item[3]=descripcion
+        id_real = item[0]
+        up      = item[1]
+        elo     = item[2] if item[2] else "Unranked"
+        nota    = item[3] if item[3] else "FRESH"
 
-        # Cortamos usuario si es muy largo
+        # Formateo de usuario
         up_clean = (up[:18] + '..') if len(up) > 18 else up
         
-        print(f"{id_c:<4} | {elo:<17} | {up_clean:<20} | {nota}")
+        # IMPRIMIMOS EL ÍNDICE 'i' (ID Visual) en lugar de 'id_real'
+        print(f"{i:<4} | {elo:<17} | {up_clean:<20} | {nota}")
+
+    print("-" * 85)
 
 def agregar_individual():
     print("\n--- AGREGAR CUENTA ÚNICA ---")
@@ -144,3 +147,20 @@ def pedir_elo():
             # Aquí está el filtro: Si no es D, E o P, no avanza.
             print("❌ Opción no válida. Solo guardamos Diamante (D) o Emerald/Plat (E/P).")
             print("   Intenta de nuevo.")
+
+def obtener_inventario_visual():
+    """Trae datos de SQL y genera (ID_VISUAL, ID_REAL, USER, ELO, DESC)"""
+    datos_reales = obtener_inventario()
+    datos_procesados = []
+    
+    for indice, fila in enumerate(datos_reales, start=1):
+        # fila[0]=id_real, fila[1]=user, fila[2]=elo, fila[3]=desc
+        id_real = fila[0]
+        user = fila[1]
+        elo = fila[2] if fila[2] else "Unranked"
+        desc = fila[3] if fila[3] else "FRESH"
+        
+        # Guardamos la tupla con los 5 elementos que la GUI espera
+        datos_procesados.append((indice, id_real, user, elo, desc))
+        
+    return datos_procesados

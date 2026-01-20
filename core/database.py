@@ -389,4 +389,3 @@ def obtener_historial():
     data = cursor.fetchall()
     conn.close()
     return data
-    return data
