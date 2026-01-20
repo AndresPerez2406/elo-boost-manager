@@ -11,7 +11,7 @@
 ## 🖼️ Preview (V7 GUI Prototype Coming Soon)
 
 <div align="center">
-  <img src="[PEGA_AQUI_LA_URL_QUE_COPIASTE](https://github.com/AndresPerez2406/elo-boost-manager/blob/main/image.png?raw=true)" alt="Imagen representativa" >
+  <img src="image.png" alt="Prototipo GUI V7" width="800">
   <p><em>Imagen representativa del concepto de interfaz gráfica moderna (Dark Mode) planeada para la versión V7.</em></p>
 </div>
 
