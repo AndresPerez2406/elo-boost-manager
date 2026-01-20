@@ -6,6 +6,7 @@ from datetime import datetime, timedelta
 # ==========================================
 # CONFIGURACIÓN Y PRECIOS
 # ==========================================
+
 PRECIOS_ELO = {
     "D4": 30, "D3": 30, "D2": 35, "D1": 45,
     "E4": 12, "E3": 12, "E2": 15, "E1": 18,

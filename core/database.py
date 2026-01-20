@@ -159,7 +159,7 @@ def registrar_abandono_db(id_pedido, elo_dejado, wr_dejado):
     exito = False
     
     try:
-        # 1. Recuperar info del pedido original
+
         cursor.execute("SELECT user_pass, elo_inicial FROM pedidos WHERE id = ?", (id_pedido,))
         datos = cursor.fetchone()
         
@@ -170,20 +170,10 @@ def registrar_abandono_db(id_pedido, elo_dejado, wr_dejado):
         u_p, elo_orig = datos
         fecha_fin = datetime.now().strftime("%Y-%m-%d %H:%M")
         
-        # ---------------------------------------------------------------
-        # 🧠 LÓGICA SIMPLIFICADA (LO QUE PEDISTE)
-        # ---------------------------------------------------------------
-        
-        # 1. El Tipo de Elo vuelve a ser EXACTAMENTE el que era antes (elo_orig)
-        #    Si la cuenta era "DIAMANTE", vuelve como "DIAMANTE".
         categoria_inv = elo_orig 
         
-        # 2. Los datos nuevos van SOLO a la descripción
         nota = f"⚠️ ABANDONO. Dejada en: {elo_dejado} ({wr_dejado}% WR)"
         
-        # ---------------------------------------------------------------
-
-        # 2. Devolver al inventario
         try:
             cursor.execute("""
                 INSERT INTO inventario (user_pass, elo_tipo, descripcion)
@@ -237,7 +227,7 @@ def obtener_cuentas_disponibles_por_elo(tipo_elo):
     """Busca cuentas ignorando mayúsculas/minúsculas y trayendo la descripción."""
     conn = conectar()
     cursor = conn.cursor()
-    # Usamos UPPER para que 'diamante' y 'DIAMANTE' sean lo mismo
+    
     query = """
         SELECT id, user_pass, descripcion
         FROM inventario
@@ -260,7 +250,6 @@ def crear_pedido(id_booster, nombre_booster, id_cuenta, user_pass, elo, fecha_fi
     try:
         fecha_hoy = datetime.now().strftime("%Y-%m-%d %H:%M")
         
-        # Agregamos 'estado' a la lista de columnas y 'En progreso' a los valores
         cursor.execute('''
             INSERT INTO pedidos (
                 booster_id, booster_nombre, user_pass, elo_inicial, 
@@ -269,7 +258,6 @@ def crear_pedido(id_booster, nombre_booster, id_cuenta, user_pass, elo, fecha_fi
             VALUES (?, ?, ?, ?, ?, ?, 'En progreso')
         ''', (id_booster, nombre_booster, user_pass, elo, fecha_hoy, fecha_fin))
 
-        # 2. Eliminamos del Inventario
         cursor.execute("DELETE FROM inventario WHERE id = ?", (id_cuenta,))
 
         conn.commit()
@@ -328,8 +316,6 @@ def obtener_pedidos_por_booster_id(id_booster_seleccionado):
     conn = conectar()
     cursor = conn.cursor()
     
-    # ERROR CORREGIDO 3: No hacemos JOIN con cuentas, porque en tu lógica V6 
-    # guardaste el user_pass y el elo directamente en la tabla pedidos.
     query = '''
         SELECT id, booster_nombre, elo_inicial, user_pass, fecha_inicio, fecha_limite
         FROM pedidos
@@ -367,7 +353,6 @@ def finalizar_pedido_db(id_pedido, elo_final, wr, cobro, pago_b, ganancia, ajust
     fecha_fin = datetime.now().strftime("%Y-%m-%d %H:%M")
     
     try:
-        # Fíjate que hay 8 campos en el SET + 1 en el WHERE = 9 signos de interrogación (?)
         cursor.execute("""
             UPDATE pedidos 
             SET estado = 'Terminado',
@@ -381,7 +366,6 @@ def finalizar_pedido_db(id_pedido, elo_final, wr, cobro, pago_b, ganancia, ajust
                 ajuste_motivo = ?
             WHERE id = ?
         """, (elo_final, wr, cobro, pago_b, ganancia, fecha_fin, ajuste_v, ajuste_m, id_pedido))
-        # ^^^ Aquí contamos: 1, 2, 3, 4, 5, 6, 7, 8, 9. ¡Ahora sí cuadra!
         
         conn.commit()
         exito = True
@@ -395,7 +379,6 @@ def finalizar_pedido_db(id_pedido, elo_final, wr, cobro, pago_b, ganancia, ajust
 def obtener_historial():
     conn = conectar()
     cursor = conn.cursor()
-    # Se añade fecha_inicio para el cálculo de eficiencia
     query = """
         SELECT id, booster_nombre, elo_final, wr, pago_booster, ganancia_empresa, 
                pago_cliente, fecha_inicio, fecha_fin_real 

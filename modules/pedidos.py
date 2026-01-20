@@ -51,25 +51,32 @@ def menu_pedidos():
 
 def listar_activos():
     """
-    Muestra la tabla de pedidos.
-    Retorna True si hay pedidos, False si está vacía.
+    Muestra la tabla de pedidos con 6 columnas:
+    ID | BOOSTER | CUENTA | INICIO | FIN | TIEMPO ACTIVA
     """
-    print("\n--- 📜 PEDIDOS EN CURSO ---")
+    print("\n" + "--- 📜 LISTADO DE PEDIDOS ACTIVOS ---".center(95))
     pedidos = obtener_pedidos_activos()
     
     if not pedidos:
-        print("   (No hay pedidos activos en este momento)")
+        print("   (No hay pedidos activos en este momento)".center(95))
         return False
 
-    # Header
-    print(f"{'ID':<4} | {'BOOSTER':<15} | {'CUENTA':<20} | {'DEADLINE':<16} | {'TIEMPO'}")
-    print("-" * 80)
+    header = f"{'ID':<4} | {'BOOSTER':<12} | {'CUENTA':<18} | {'INICIO':<16} | {'FIN':<16} | {'TIEMPO ACTIVA'}"
+    print(header)
+    print("-" * 95)
     
     for pid, b_nom, elo, user_pass, f_ini, f_lim in pedidos:
-        cuenta_display = (user_pass[:18] + '..') if len(user_pass) > 18 else user_pass
-        tiempo = calcular_tiempo_transcurrido(f_ini)
-        print(f"{pid:<4} | {b_nom:<15} | {cuenta_display:<20} | {f_lim:<16} | {tiempo}")
+        
+        # Acortamos el usuario para no romper la fila
+        cuenta_display = (user_pass[:16] + '..') if len(user_pass) > 16 else user_pass
+        
+        # Calculamos el tiempo que lleva activa la cuenta
+        tiempo_activa = calcular_tiempo_transcurrido(f_ini)
+        
+        # Imprimimos la fila respetando los anchos del header
+        print(f"{pid:<4} | {b_nom:<12} | {cuenta_display:<18} | {f_ini:<16} | {f_lim:<16} | {tiempo_activa}")
     
+    print("-" * 95)
     return True
 
 # --------------------------------------------------------------------------
@@ -201,13 +208,13 @@ def buscar_por_booster():
         print("⚠️ No hay boosters trabajando ahora.")
         return
     
-    for b in boosters: print(f"ID {b[0]} : {b[1]}")
+    for b in boosters: print(f"{b[0]} : {b[1]}")
     try:
         idx = int(input("ID Booster: "))
         peds = obtener_pedidos_por_booster_id(idx)
         if peds:
             print(f"{'':<4} | {'CUENTA':<20} | {'DEADLINE'}")
-            for p in peds: print(f"{p[0]:<4} | {p[3]:<20} | {p[5]}")
+            for p in peds: print(f" {p[0]:<4} | {p[3]:<20} | {p[5]}")
         else:
             print("❌ Sin trabajos activos.")
     except: pass
