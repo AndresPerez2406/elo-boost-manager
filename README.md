@@ -11,7 +11,7 @@
 ## 🖼️ Preview (V7 GUI Prototype Coming Soon)
 
 **`<div align="center">`**
-  **`<img src="preview_v7.png" alt="Prototipo GUI V7" width="800">`**
+  **`<img src="prev<img width="2816" height="1536" alt="preview_v7" src="https://github.com/user-attachments/assets/f8329c07-6300-4a3f-8016-cbdf9275d555" />
   **`<p>`**`<em>`Imagen representativa del concepto de interfaz gráfica moderna (Dark Mode) planeada para la versión V7.**`</em>`**`</p>`
 **`</div>`**
 
