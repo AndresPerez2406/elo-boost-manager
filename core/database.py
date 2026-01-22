@@ -161,10 +161,15 @@ def finalizar_pedido_db(id_pedido, elo_final, wr, cobro, pago_b, ganancia, ajust
     finally: conn.close()
 
 def obtener_historial():
-    conn = conectar(); cursor = conn.cursor()
+    conn = conectar()
+    cursor = conn.cursor()
+    # Agregamos user_pass al final (índice 9)
     cursor.execute("""SELECT id, booster_nombre, elo_final, wr, pago_booster, ganancia_empresa, 
-                      pago_cliente, fecha_inicio, fecha_fin_real FROM pedidos WHERE estado = 'Terminado'""")
-    data = cursor.fetchall(); conn.close(); return data
+                      pago_cliente, fecha_inicio, fecha_fin_real, user_pass 
+                      FROM pedidos WHERE estado = 'Terminado'""")
+    data = cursor.fetchall()
+    conn.close()
+    return data
 
 # ==========================================
 # SECCIÓN 5: CONFIGURACIÓN DE TARIFAS

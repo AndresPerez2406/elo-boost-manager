@@ -527,14 +527,19 @@ class PerezBoostApp(ctk.CTk):
         self.entry_busqueda_h = ctk.CTkEntry(header_h, placeholder_text="Filtrar por Booster...", width=250)
         self.entry_busqueda_h.pack(side="right")
 
-        # --- TABLA ---
+       # --- TABLA ---
         cols = ("#", "booster", "cuenta", "pago_b", "gan_m", "total", "inicio", "fin", "tiempo")
         self.tabla_historial = ttk.Treeview(self.content_frame, columns=cols, show="headings")
         
-        headers = ["#", "BOOSTER", "ELO", "PAGO B.", "PEREZ", "CLIENTE", "INICIO", "FIN", "DURACIÓN"]
+        # CAMBIO: Título "CUENTA / ELO"
+        headers = ["#", "BOOSTER", "CUENTA / ELO", "PAGO B.", "PEREZ", "CLIENTE", "INICIO", "FIN", "DURACIÓN"]
+        
         for col, head in zip(cols, headers):
             self.tabla_historial.heading(col, text=head)
-            self.tabla_historial.column(col, anchor="center", width=100)
+            
+            # CAMBIO: Hacemos la columna 'cuenta' más ancha (180px)
+            ancho = 180 if col == "cuenta" else 90
+            self.tabla_historial.column(col, anchor="center", width=ancho)
         
         self.tabla_historial.column("#", width=40)
         self.tabla_historial.pack(padx=30, pady=10, fill="both", expand=True)

@@ -34,26 +34,37 @@ def obtener_pedidos_visual():
     return [(i, *p[1:]) for i, p in enumerate(procesados, start=1)]
 
 def obtener_historial_visual():
-    """
-    Procesa el historial terminado y calcula totales financieros.
-    """
     datos = obtener_historial()
     procesados = []
     t = {"booster": 0.0, "empresa": 0.0, "cliente": 0.0}
     
     for i, h in enumerate(datos, start=1):
-        # h = (id, b_nom, elo_f, wr, pago_b, gan_m, total, f_ini, f_fin)
+        # h ahora trae: [0]id, [1]booster, ... , [9]USER_PASS
+        
         duracion = calcular_duracion_servicio(h[7], h[8])
         
-        # Formato para tabla: (#, Booster, Elo, PagoB, Ganancia, Total, Inicio, Fin, Duración)
-        procesados.append((i, h[1], h[2], f"${h[4]}", f"${h[5]}", f"${h[6]}", h[7], h[8], duracion))
+        # LOGICA NUEVA: Extraemos solo el usuario (antes de los dos puntos)
+        # Si h[9] es "usuario:123", esto muestra "usuario (Elo)"
+        usuario_solo = h[9].split(':')[0] if h[9] else "N/A"
+        info_cuenta = f"{usuario_solo} ({h[2]})"
+
+        procesados.append((
+            i, 
+            h[1], 
+            info_cuenta,    # <--- Aquí mostramos Usuario + Elo
+            f"${h[4]}", 
+            f"${h[5]}", 
+            f"${h[6]}", 
+            h[7], 
+            h[8], 
+            duracion
+        ))
         
-        # Sumar totales (validando que no sean None)
+        # Sumas totales
         t["booster"] += h[4] if h[4] else 0
         t["empresa"] += h[5] if h[5] else 0
         t["cliente"] += h[6] if h[6] else 0
         
-    # Retornamos la lista y una tupla con los totales
     return procesados, (t["booster"], t["empresa"], t["cliente"])
 
 # ======================================================
