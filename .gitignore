@@ -1,3 +1,5 @@
-*.db
 __pycache__/
-*.csv
+.venv/
+.vscode/
+backups/
+*.db

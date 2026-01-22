@@ -1,63 +1,77 @@
 from datetime import datetime, timedelta
 
-# --- 1. CONFIGURACIÓN DE PRECIOS Y TRADUCCIÓN ---
-
-PRECIOS_BASE = {
-    "D4": 30, "D3": 30, "D2": 35, "D1": 45,
-    "E4": 12, "E3": 12, "E2": 15, "E1": 18,
-    "P4": 8,  "P3": 8,  "P2": 10, "P1": 10,
-    "G4": 5,  "G3": 5,  "G2": 5,  "G1": 5  # Agregué Oro por si acaso
-}
-
-MARGEN_GANANCIA = { "D": 10.0, "E": 5.0, "P": 5.0, "G": 2.0 }
+# ==========================================
+# SECCIÓN 1: NORMALIZACIÓN
+# ==========================================
 
 def normalizar_elo(entrada):
-    
+
     if not entrada: return ""
-    
     texto = entrada.strip().upper()
-    
     mapeo = {
         'D': 'DIAMANTE',
         'P': 'Emerald/Plat',
         'E': 'Emerald/Plat',
         'EP': 'Emerald/Plat'
     }
-    
     return mapeo.get(texto, texto)
 
-# --- 2. LÓGICA DE DINERO ---
+# ==========================================
+# SECCIÓN 2: LÓGICA FINANCIERA DINÁMICA
+# ==========================================
 
 def calcular_pago_real(division, wr, ajuste_manual=0):
+    
+    from core.database import conectar
+    
     division = division.upper().strip()
+    conn = conectar()
+    cursor = conn.cursor()
     
-    # Si la división no tiene precio, retornamos ceros
-    if division not in PRECIOS_BASE:
-        return 0, 0, 0
-    
-    precio_cliente = float(PRECIOS_BASE[division])
-    tipo_elo = division[0] # D, E, P, G
-    mi_ganancia_base = MARGEN_GANANCIA.get(tipo_elo, 5.0)
-    
-    pago_booster = precio_cliente - mi_ganancia_base
-    
-    # Regla: Bono WR >= 60%
-    if wr >= 60:
-        pago_booster += 1.0
-        precio_cliente += 1.0 
+    try:
 
-    # Regla: Penalización WR < 50%
-    if wr < 50:
-        pago_booster -= (pago_booster * 0.25)
-    
-    pago_booster += ajuste_manual
-    if pago_booster < 0: pago_booster = 0
-
-    ganancia_empresa = precio_cliente - pago_booster
+        cursor.execute("SELECT precio_cliente, margen_perez FROM config_precios WHERE division = ?", (division,))
+        resultado = cursor.fetchone()
         
-    return round(precio_cliente, 2), round(pago_booster, 2), round(ganancia_empresa, 2)
+        if not resultado:
+            return 0.0, 0.0, 0.0 # División no encontrada
+            
+        precio_cliente, margen_perez = resultado
+        
+        # El pago base del booster es: lo que paga el cliente menos tu ganancia configurada
+        pago_booster = precio_cliente - margen_perez
+        
+        # --- REGLAS DE RENDIMIENTO (HARDCODED POR POLÍTICA) ---
+        
+        # 1. Bono por excelencia (WR >= 60%)
+        if wr >= 60:
+            pago_booster += 1.0
+            precio_cliente += 1.0 
 
-# --- 3. LÓGICA DE FECHAS ---
+        # 2. Penalización por bajo rendimiento (WR < 50%)
+        # Se le descuenta el 25% de su pago base
+        if wr < 50:
+            pago_booster -= (pago_booster * 0.25)
+        
+        # 3. Aplicación de ajustes manuales (Casilla "Otros" en la GUI)
+        pago_booster += ajuste_manual
+        
+        # Aseguramos que el pago no sea negativo
+        if pago_booster < 0: pago_booster = 0
+
+        ganancia_final_empresa = precio_cliente - pago_booster
+            
+        return round(precio_cliente, 2), round(pago_booster, 2), round(ganancia_final_empresa, 2)
+
+    except Exception as e:
+        print(f"Error en cálculo financiero: {e}")
+        return 0.0, 0.0, 0.0
+    finally:
+        conn.close()
+
+# ==========================================
+# SECCIÓN 3: GESTIÓN DE TIEMPOS
+# ==========================================
 
 def calcular_fecha_limite_sugerida(dias=10): 
     return (datetime.now() + timedelta(days=dias)).strftime("%Y-%m-%d %H:%M")
@@ -75,26 +89,21 @@ def calcular_tiempo_transcurrido(fecha_inicio_str):
         inicio = datetime.strptime(fecha_inicio_str, "%Y-%m-%d %H:%M")
         diff = datetime.now() - inicio
         dias, horas = diff.days, diff.seconds // 3600
+        
         if dias == 0:
             return f"🟢 Hoy ({horas}h)"
         return f"⚠️ {dias}d {horas}h"
-    except: return "N/A"
+    except: 
+        return "N/A"
 
 def calcular_duracion_servicio(f_inicio_str, f_fin_str):
-    
     try:
         inicio = datetime.strptime(f_inicio_str, "%Y-%m-%d %H:%M")
         fin = datetime.strptime(f_fin_str, "%Y-%m-%d %H:%M")
-        
         diff = fin - inicio
-        dias = diff.days
-        horas = diff.seconds // 3600
+        dias, horas = diff.days, diff.seconds // 3600
         
-        if dias == 0:
-            return f"{horas}h"
+        if dias == 0: return f"{horas}h"
         return f"{dias}d {horas}h"
     except:
         return "N/A"
-
-def calcular_duracion_boost(inicio_str, fin_str):
-    return "N/A" # Simplificado
